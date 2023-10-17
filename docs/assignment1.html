@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Steven Ellis">
+<meta name="keywords" content="SONA, text modelling, sentiment analysis, latent Dirichlet allocation, LDA, bag-of-words">
+
+<title>Submission - Predictive Modelling of Presidential SONA Addresses in South Africa - 1994 to 2023</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body>
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="assignment1.pdf"><i class="bi bi-file-pdf"></i>PDF (acs)</a></li></ul></div></div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Predictive Modelling of Presidential SONA Addresses in South Africa - 1994 to 2023</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Steven Ellis </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="abstract-title">Abstract</div>
+    <p>Summary of motivation and outcome. Start with context, task and object, finish with findings and conclusion. This is written last.</p>
+  </div>
+</div>
+
+</header>
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>The State of the Nation Address of the President of South Africa is an annual event in the Republic of South Africa, in which the President of South Africa reports on the status of the nation, normally to the resumption of a joint sitting of Parliament. This assignment purports to create predictive models that predict from a sentence from which South African president it derives. The data-set provided includes 36 speeches from 1994 to 2023 delivered by six different presidents.</p>
+<p>For the assignment, the prodictive models generated and compared were a feed-forward neural network, a classification tree, a random forest and a convolutional neural network.</p>
+</section>
+<section id="literature-review" class="level2">
+<h2 class="anchored" data-anchor-id="literature-review">Literature Review</h2>
+</section>
+<section id="data-and-methods" class="level2">
+<h2 class="anchored" data-anchor-id="data-and-methods">Data and Methods</h2>
+<section id="data-import-and-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="data-import-and-transformation">Data import and transformation</h3>
+<p>As part of the data import and transformation step, the following tasks were performed: * All speeches were imported from their respective <code>.txt</code> files into a data-frame * The speech year and president were added as columns to the data-frame * Any links or non-ascii words were removed from the sentences via the <strong>str_replace_all()</strong> function from the R <code>stringr</code> library * The data-frame was converted to a tibble</p>
+</section>
+<section id="imbalanced-data" class="level3">
+<h3 class="anchored" data-anchor-id="imbalanced-data">Imbalanced Data</h3>
+<p>The first data problem to be confronted was that of imbalanced data. Two presidents (deKlerk and Motlanthe) only produced one SONA speech, meaning their words and sentences were extremely under-represented in the data-set. In addition, some presidents gave longer speeches with more sentences than others. Since imbalanced data can have an adverse effect on predictive modelling, it was decided that three different data-sets would be produced:</p>
+<ol type="1">
+<li>An <em>imbalanced</em> data-set, where presidential speeches were left in their original proportions</li>
+<li>A <em>balanced</em> data-set: in this data-set, the speeches severely under-represented presidents (<em>deKlerk</em> and <em>Motlanthe</em>) were removed. On the remaining data-set, <strong>under-sampling</strong> was performed by limiting each president’s sentences to the <em>minimum</em> number of sentences delivered by a president within the remaining consort (1665)</li>
+<li>An <em>oversampled</em> data-set. Over-sampling involves adding more samples from under-represented classes. To achieve this, the <strong>oversample_smote()</strong> function by the R <code>scutr</code> library was used to create synthetic samples from under-represented presidential sentences, with the end result that each president had an equal number of speeches in the final oversampled data-set.</li>
+</ol>
+<p>The three data-sets were then be used and compared during predictive modelling.</p>
+<p>In order to prepare the data-set into one upon which various predictive models could be run, the data-set needed to be tokenised and transformed from ‘long’ to ‘wide’ format, where each word (and the frequency count of how often it is represented in a sentence delivered by a president) is represented as a numeric column in a sparse and wide data-set.</p>
+<p>To achieve this, the data-set was first tokenised into sentences, using the <strong>unnest_tokens()</strong> function from the R <code>tidytext</code> library, which split the speeches column into sentence tokens, flattening the resulting data-set into one-sentence-per-row.</p>
+<p>Thereafter, two methodologies were used to word-tokenize the remaining data-set: bag-of-words method and term frequency-inverse-document-frequency (tf-idf) model.</p>
+</section>
+<section id="bag-of-words" class="level3">
+<h3 class="anchored" data-anchor-id="bag-of-words">Bag of Words</h3>
+<p>In a bag-of-words model, a document is represented by the frequency counts of the words used therein via a simplified representation that ignores word order and grammar.</p>
+<p>To achieve this, sentences had all stop words removed and were then tokenised per word. Thereafter, from the tidy word-tokenised data-set, the top <strong>200</strong> utilised words were extracted. Thereafter, using the sentence-tokenised data-set, number of times each of these words was used in each sentence was calculated. Finally, the resulting data-set was re-shaped using R <strong>pivot_wider()</strong> function, so that each sentence was in its own row, and each word in its own column. This wide, sparse and untidy data-set was now ready for predictive modelling.</p>
+<p>The bag-of-words transformation was performed on all three data-sets (<em>imbalanced</em>, <em>balanced</em> and <em>oversampled</em>).</p>
+</section>
+<section id="tf-idf" class="level3">
+<h3 class="anchored" data-anchor-id="tf-idf">TF-IDF</h3>
+<p>What is clear from reading some of the SONA speeches is that certain words and phrases are habitually repeated by all presidents. In order to assist with predictive modelling, a common technique is to downweigh words in a term that are used frequently by all presidents (such as ‘deliver’, ‘budget’, ‘economy’, ‘invest’) and upweigh words that are relatively more frequently by a single president. This is what tf-idf aims to achieve. It calculates a inverse-document-frequency-weighted-term-frequencies score for each word, which is low for words commonly used in many documents, and higher for higher for words that are not used by many documents in a corpus. TF-IDF scores were retrieved using the <strong>bind_tf_idf()</strong> function from the R <code>tidytext</code> library.</p>
+<p>The tf-idf transformation was also performed on all three data-sets (<em>imbalanced</em>, <em>balanced</em> and <em>oversampled</em>).</p>
+</section>
+<section id="test-and-training-data-sets" class="level3">
+<h3 class="anchored" data-anchor-id="test-and-training-data-sets">Test and training data-sets</h3>
+<p>Once Bag of Words and TF-IDF transformations were completed on the three data-sets, they were split into training and testing sets. The split chosen was a 70/30 split, where 70% of the observations were used to train predictive models and 30 were used for testing.</p>
+</section>
+<section id="neural-networks" class="level3">
+<h3 class="anchored" data-anchor-id="neural-networks">Neural Networks</h3>
+<p>Neural networks are a subset of machine learning and are at the heart of deep learning algorithms. These models are comprised of a node layers, containing an input layer, one or more hidden layers, and an output layer.</p>
+<p>Each node, or artificial neuron, connects to another and has an associated weight and threshold. Weights are very much like the coefficients used in a regression equation.</p>
+<p>The weighted inputs are summed and passed through an activation function (which simply maps the summed weighted inputs to the output of the neuron, typically using a non-linear function). If the output of any individual node is above the specified threshold value, that node is activated, sending data to the next layer of the network. Otherwise, no data is passed along to the next layer of the network.</p>
+<p>This topology allows the network to combine the inputs in more complex ways and thus to model highly non-linear data-sets.</p>
+<p>For this problem, the R <code>keras</code> library was used, and the <strong>keras_model_sequential()</strong> function was used to create a linear stack of layers in our deep learning model. We used Keras to assemble layers into a fully-connected multi-layer perceptron.</p>
+<ul>
+<li>1024 units in input layer, with <em>ReLu</em> activation function</li>
+<li>dropout layer with a rate of 0.1</li>
+<li>128 units in hidden layer with <em>ReLu</em> activation function</li>
+<li>dropout layer with a rate of 0.2</li>
+<li>6 units in output layer with <em>softmax</em> function</li>
+</ul>
+<p>In order to prepare the data-set for multi-class classification, one hot encoding was performed on the target attribute target using the <strong>to_categorical()</strong> function in R <code>keras</code> library.</p>
+<p>The <strong>Adam</strong> optimiser was used, and the <strong>categorical_crossentropy</strong> loss function was used because of the multi-class classification requirement, and the chosen metric was <strong>accuracy</strong>.</p>
+<p>When fitting the model a batch_size of 128 was applied and 50 epochs were chosen. A validation split of 20% used.</p>
+</section>
+<section id="classification-tree" class="level3">
+<h3 class="anchored" data-anchor-id="classification-tree">Classification Tree</h3>
+<p>Classification trees are used for data classification through a process known as binary recursive partitioning. This is an iterative process of splitting the data into partitions, and then splitting it up further on each of the branches. Classification trees are also the fundamental components to random forests (used later), and allow for visualisation of decision rules and partitioning logic.</p>
+<p>To generate classification trees models the <strong>rpart()</strong> R function was used.</p>
+</section>
+<section id="random-forest" class="level3">
+<h3 class="anchored" data-anchor-id="random-forest">Random Forest</h3>
+<p>While decision trees are common supervised learning algorithms, they can be prone to problems, such as bias and overfitting. Random forest strives to oversome this weakness by combining the output of multiple decision trees to reach a single result. Random forests ensure that the decision trees are <em>de-correlated</em> as follows: when building decision trees in a random forest, each time a split in a tree is considered, a random sample of <em>m</em> predictors is chosen as split candidates from the full set of <em>p</em> predictors. This prevents dominant predictors giving all trees in the model correlated results.</p>
+<p>To generate random forest classification models, the <strong>randomForest()</strong> R function was used. A forest of 100 trees was generated.</p>
+</section>
+<section id="convolutional-neural-networks" class="level3">
+<h3 class="anchored" data-anchor-id="convolutional-neural-networks">Convolutional Neural Networks</h3>
+<p>Convolutional neural network is a regularized type of feed-forward neural network that learns feature engineering by itself via filters optimization. It is typically used for image recognition.</p>
+<p>The pre-processing required in a convolutional neural network is much lower as compared to other classification algorithms. The architecture performs a better fitting to the image dataset due to the reduction in the number of parameters involved and the reusability of weights.</p>
+<p>To generate the CNN models, the <strong>text_tokenizer()</strong> and <strong>fit_text_tokenizer()</strong> functions from <code>keras</code> was used to vectorize the top X words from a balanced and unbalanced data-sets. These were then padded to equal length before being fitted to a convolutional network via the <strong>keras_model_sequential()</strong> function. The exercise was repeated for top 100, 200 and 300 words.</p>
+<p>One hot encoding was again performed on the target attribute target using the <strong>to_categorical()</strong> function in R <code>keras</code> library.</p>
+<p>The <strong>Adam</strong> optimiser was used, and the <strong>categorical_crossentropy</strong> loss function was used, and the chosen metric was <strong>accuracy</strong>.</p>
+<p>When fitting the model a batch_size of 128 was applied and 50 epochs were chosen. A validation split of 20% used.</p>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="classification-tree-1" class="level3">
+<h3 class="anchored" data-anchor-id="classification-tree-1">Classification Tree</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Table 1: Classification Tree Model Prediction Accuracies </caption>
+<colgroup>
+<col style="width: 60%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Tokenisation model</th>
+<th style="text-align: right;">Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bag of words - unbalanced</td>
+<td style="text-align: right;">0.314</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bag of words - balanced</td>
+<td style="text-align: right;">0.294</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bag of words - oversampled</td>
+<td style="text-align: right;">0.314</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TFIDF - unbalanced</td>
+<td style="text-align: right;">0.317</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TFIDF - balanced</td>
+<td style="text-align: right;">0.280</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TFIDF - oversampled</td>
+<td style="text-align: right;">0.309</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>From the results in <strong>Table 1</strong> it is clear that the classification tree model generally performed poorly against all data-sets, with (interestingly) slightly better prediction results against the unbalanced data-sets.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-neural" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;1: Table 2: Neural Network Model Prediction Accuracies</caption>
+<colgroup>
+<col style="width: 60%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">neural_networks_results_df_type</th>
+<th style="text-align: right;">neural_networks_results_accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bag of words - unbalanced</td>
+<td style="text-align: right;">0.407</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bag of words - balanced</td>
+<td style="text-align: right;">0.425</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bag of words - oversampled</td>
+<td style="text-align: right;">0.645</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TFIDF - unbalanced</td>
+<td style="text-align: right;">0.433</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TFIDF - balanced</td>
+<td style="text-align: right;">0.417</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TFIDF - oversampled</td>
+<td style="text-align: right;">0.635</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The feed-forward neural-network performed well against the over-sampled data-sets.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Table 3: Neural Network - Confusion Matrix Against <strong>Balanced Bag-of-Words</strong> Data-Set </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Mandela</th>
+<th style="text-align: right;">Mbeki</th>
+<th style="text-align: right;">Ramaphosa</th>
+<th style="text-align: right;">Zuma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mandela</td>
+<td style="text-align: right;">189</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">74</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mbeki</td>
+<td style="text-align: right;">113</td>
+<td style="text-align: right;">208</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ramaphosa</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">197</td>
+<td style="text-align: right;">112</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Zuma</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">106</td>
+<td style="text-align: right;">181</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Table 4: Neural Network - Confusion Matrix Against <strong>Balanced TFIDF</strong> Data-Set </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Mandela</th>
+<th style="text-align: right;">Mbeki</th>
+<th style="text-align: right;">Ramaphosa</th>
+<th style="text-align: right;">Zuma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mandela</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">62</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mbeki</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">185</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">83</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ramaphosa</td>
+<td style="text-align: right;">102</td>
+<td style="text-align: right;">76</td>
+<td style="text-align: right;">176</td>
+<td style="text-align: right;">102</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Zuma</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">180</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Looking at the confusion matrix of the model against the balanced bag-of-words and tf-idf data-sets, whilst the diagonal (correct predictions) represents the highest number for each row (president), the model did suffer from a reasonably high portion of incorrect predictions.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Table 5: Neural Network - Confusion Matrix Against <strong>Oversampled TFIDF</strong> Data-Set </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">Mandela</th>
+<th style="text-align: right;">Mbeki</th>
+<th style="text-align: right;">Ramaphosa</th>
+<th style="text-align: right;">Zuma</th>
+<th style="text-align: right;">deKlerk</th>
+<th style="text-align: right;">Motlanthe</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mandela</td>
+<td style="text-align: right;">394</td>
+<td style="text-align: right;">114</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">95</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mbeki</td>
+<td style="text-align: right;">147</td>
+<td style="text-align: right;">272</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">115</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">42</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ramaphosa</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">310</td>
+<td style="text-align: right;">173</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">22</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Zuma</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">346</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">deKlerk</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">689</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Motlanthe</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">661</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The confusion matrix for the over-sampled tf-idf data-set reveals an interesting phenomenon: the model achieved extremely high predictive accuracy against deKlerk and Motlanthe, both of whom where heavily over-sampled because of the fact that they delivered only one SONA speech. However, the remaining presidents also exhibit better prediction rates when compared to the two confusion matrices above, suggesting that the over-sampling method is effective in balancing out the data-set for predictive modelling.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-random-forest" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;2: Table 6: Random Forest Model Prediction Accuracies</caption>
+<colgroup>
+<col style="width: 60%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Tokenisation model</th>
+<th style="text-align: right;">Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bag of words - unbalanced</td>
+<td style="text-align: right;">0.346</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bag of words - balanced</td>
+<td style="text-align: right;">0.395</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bag of words - oversampled</td>
+<td style="text-align: right;">0.481</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TFIDF - unbalanced</td>
+<td style="text-align: right;">0.348</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TFIDF - balanced</td>
+<td style="text-align: right;">0.375</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TFIDF - oversampled</td>
+<td style="text-align: right;">0.455</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>The random forest classifier produced satisfactory results across all data-sets, achieving over 48% accuracy against the over-sampled bag-of-words data-set.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="tbl-cn" class="anchored">
+<table class="table table-sm table-striped small">
+<caption>Table&nbsp;3: Table 7: Convolutional Neural Network Model Prediction Accuracies</caption>
+<colgroup>
+<col style="width: 60%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Data Set</th>
+<th style="text-align: right;">Loss</th>
+<th style="text-align: right;">Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Top 100 words - unbalanced data set</td>
+<td style="text-align: right;">1.349</td>
+<td style="text-align: right;">0.442</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Top 100 words - balanced data set</td>
+<td style="text-align: right;">1.247</td>
+<td style="text-align: right;">0.433</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Top 200 words - unbalanced data set</td>
+<td style="text-align: right;">1.289</td>
+<td style="text-align: right;">0.477</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Top 200 words - balanced data set</td>
+<td style="text-align: right;">1.178</td>
+<td style="text-align: right;">0.469</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Top 300 words - unbalanced data set</td>
+<td style="text-align: right;">1.240</td>
+<td style="text-align: right;">0.489</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Top 300 words - balanced data set</td>
+<td style="text-align: right;">1.204</td>
+<td style="text-align: right;">0.471</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Finally, the CNN classifier also produced satisfactory results across all data-sets, achieving almost 49% accuracy against the top 300 tokenised words against an unbalanced data-set.</p>
+</section>
+</section>
+<section id="discussion-conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion-conclusion">Discussion &amp; Conclusion</h2>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<p>The class makes various changes to the way that references are handled. The class loads <code>natbib</code>, and also the appropriate bibliography style. References can be made using the normal method; the citation should be placed before any punctuation, as the class will move it if using a superscript citation style <span class="citation" data-cites="Garnier2007">(<a href="#ref-Garnier2007" role="doc-biblioref">Garnier, Gautrais, and Theraulaz 2007</a>)</span>. The use of <code>natbib</code> allows the use of the various citation commands of that package have shown something. Long lists of authors will be automatically truncated in most article formats, but not in supplementary information or reviews. If you encounter problems with the citation macros, please check that your copy of <code>natbib</code> is up to date. The demonstration database file <code>bibliography.bib</code> shows how to complete entries correctly.</p>
+<p>Multiple citations to be combined into a list can be given as a single citation. This uses the <code>mciteplus</code> package. Citations other than the first of the list should be indicated with a star.</p>
+<p>The class also handles notes to be added to the bibliography. These should be given in place in the document. As with citations, the text should be placed before punctuation. A note is also generated if a citation has an optional note. This assumes that the whole work has already been cited: odd numbering will result if this is not the case .</p>
+</section>
+</section>
+<section id="references-1" class="level2">
+
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Garnier2007" class="csl-entry" role="listitem">
+Garnier, Simon, Jacques Gautrais, and Guy Theraulaz. 2007. <span>“<span class="nocase">The biological principles of swarm intelligence</span>.”</span> <em>Swarm Intelligence</em> 1 (1): 3–31. <a href="https://doi.org/10.1007/s11721-007-0004-y">https://doi.org/10.1007/s11721-007-0004-y</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
