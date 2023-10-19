@@ -3,4 +3,17 @@ project:
   output-dir: docs
 
 website:
-  title: "Submission"
+  title: "STA5073Z"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: assignment1.qmd
+        text: Assignment Submission
+      - href: plagiarism_declaration.pdf
+        text: "Plagiarism Declaration"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
